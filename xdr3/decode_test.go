@@ -525,7 +525,6 @@ func TestUnmarshal(t *testing.T) {
 	if err == nil {
 		t.Errorf("union decode: expected error, got nil")
 	}
-
 }
 
 // decodeFunc is used to identify which public function of the Decoder object
@@ -799,6 +798,20 @@ func TestUnmarshalCorners(t *testing.T) {
 		if !reflect.DeepEqual(cappedSlice, expectedVal) {
 			t.Errorf("%s: unexpected result - got: %v want: %v\n",
 				testName, cappedSlice, expectedVal)
+		}
+	}
+
+	// Ensure decode to a slice retuns expected number of elements
+	testName = "Unmarshal to oversized slice"
+	oversizedSlice := make([]bool, 2, 2)
+	expectedN = 8
+	expectedErr = nil
+	expectedVal = []bool{true}
+	n, err = Unmarshal(bytes.NewReader(buf), &oversizedSlice)
+	if testExpectedURet(t, testName, n, expectedN, err, expectedErr) {
+		if !reflect.DeepEqual(oversizedSlice, expectedVal) {
+			t.Errorf("%s: unexpected result - got: %v want: %v\n",
+				testName, oversizedSlice, expectedVal)
 		}
 	}
 
